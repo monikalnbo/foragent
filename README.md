@@ -6,6 +6,18 @@
 
 ---
 
+## 📦 官方安装包资源直链下载 (Release Package Downloads)
+
+| 安装包类型 | 文件名 | 体积 | 下载直链 (点击直接下载) |
+| :--- | :--- | :--- | :--- |
+| 🚀 **单文件 EXE 安装器 (推荐)** | `AgentOS-Setup-x64.exe` | **11.49 MB** | [👉 **点击直接下载 AgentOS-Setup-x64.exe**](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Setup-x64.exe) |
+| 📦 **Windows Installer 安装包** | `AgentOS-Setup-x64.msi` | 6.24 MB | [👉 **点击直接下载 AgentOS-Setup-x64.msi**](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Setup-x64.msi) |
+| 🌐 **GitHub Releases 资源主页** | `v0.1.0` | - | [🔗 **前往 GitHub Releases 资源主页**](https://github.com/monikalnbo/foragent/releases/tag/v0.1.0) |
+
+> 💡 **提示**：推荐下载 **`AgentOS-Setup-x64.exe`**，无需解压任何 zip 压缩包，双击即可弹出安装向导，一键完成安装部署并创建桌面快捷方式。
+
+---
+
 ## 一、 核心子工程全景树（全部为 40~85 行微文件）
 
 ```text
