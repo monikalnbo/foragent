@@ -34,18 +34,29 @@ jobs:
       - name: Build Release Binaries & Dynamic Libraries
         run: cargo build --release --workspace
 
-      - name: Prepare Windows Artifacts
+      - name: Prepare Windows Artifacts & Build MSI
         if: matrix.os == 'windows-latest'
-        shell: bash
+        shell: pwsh
         run: |
-          mkdir -p dist-windows
-          cp target/release/*.dll dist-windows/ 2>/dev/null || true
-          cp target/release/myagent_ui.exe dist-windows/ 2>/dev/null || true
-          cp target/release/myagent_runtime.exe dist-windows/ 2>/dev/null || true
-          cp myagent.toml dist-windows/ 2>/dev/null || true
-          echo "Windows build artifacts packaged successfully."
+          New-Item -ItemType Directory -Force -Path dist-windows | Out-Null
+          Copy-Item target/release/*.dll dist-windows/ -Force -ErrorAction SilentlyContinue
+          Copy-Item target/release/myagent_ui.exe dist-windows/ -Force -ErrorAction SilentlyContinue
+          Copy-Item target/release/myagent_runtime.exe dist-windows/ -Force -ErrorAction SilentlyContinue
+          Copy-Item myagent.toml dist-windows/ -Force -ErrorAction SilentlyContinue
+          Copy-Item installer/windows/* dist-windows/ -Force -ErrorAction SilentlyContinue
 
-      - name: Upload Windows Dynamic Libraries & UI Artifact
+          # 编译 Windows 自带的原生 Windows Installer (MSI) 安装包
+          if (Get-Command candle.exe -ErrorAction SilentlyContinue) {
+              candle.exe -arch x64 -out target/installer.wixobj installer/wix/main.wxs
+              light.exe -out dist-windows/AgentOS-Setup-x64.msi target/installer.wixobj
+              Write-Host ">>> Windows 原生 MSI 安装包生成成功: dist-windows/AgentOS-Setup-x64.msi" -ForegroundColor Green
+          } elseif ($env:WIX) {
+              & "$env:WIX\bin\candle.exe" -arch x64 -out target/installer.wixobj installer/wix/main.wxs
+              & "$env:WIX\bin\light.exe" -out dist-windows/AgentOS-Setup-x64.msi target/installer.wixobj
+              Write-Host ">>> Windows 原生 MSI 安装包生成成功 (via WIX env)" -ForegroundColor Green
+          }
+
+      - name: Upload Windows MSI & Release Artifacts
         if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v4
         with:

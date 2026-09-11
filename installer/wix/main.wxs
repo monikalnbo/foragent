@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*" Name="AgentOS Studio" Language="2052" Version="0.1.0" Manufacturer="AgentOS Team" UpgradeCode="7C9A4B3A-8B6C-4D2A-9E1F-2B3C4D5E6F7A">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" Platform="x64" />
+    <MajorUpgrade DowngradeErrorMessage="已安装更高版本的 AgentOS Studio。" />
+    <MediaTemplate EmbedCab="yes" />
+
+    <Feature Id="ProductFeature" Title="AgentOS Studio" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+      <ComponentRef Id="ApplicationShortcut" />
+      <ComponentRef Id="ApplicationShortcutDesktop" />
+    </Feature>
+  </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFiles64Folder">
+        <Directory Id="INSTALLFOLDER" Name="AgentOS" />
+      </Directory>
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="AgentOS" />
+      </Directory>
+      <Directory Id="DesktopFolder" Name="Desktop" />
+    </Directory>
+  </Fragment>
+
+  <Fragment>
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut" Guid="8D1A3C4B-5E6F-7A8B-9C0D-1E2F3A4B5C6D">
+        <Shortcut Id="AppStartMenuShortcut" Name="AgentOS Studio" Target="[INSTALLFOLDER]myagent_ui.exe" WorkingDirectory="INSTALLFOLDER" />
+        <RemoveFolder Id="CleanUpShortCut" Directory="ApplicationProgramsFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\AgentOS" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+    <DirectoryRef Id="DesktopFolder">
+      <Component Id="ApplicationShortcutDesktop" Guid="9E2B4D5C-6F7A-8B9C-0D1E-2F3A4B5C6D7E">
+        <Shortcut Id="AppDesktopShortcut" Name="AgentOS Studio" Target="[INSTALLFOLDER]myagent_ui.exe" WorkingDirectory="INSTALLFOLDER" />
+        <RegistryValue Root="HKCU" Key="Software\AgentOS\Desktop" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <Component Id="MainExecutable" Guid="A1B2C3D4-E5F6-7A8B-9C0D-1E2F3A4B5C6D" Win64="yes">
+        <File Id="MyAgentUIExe" Source="dist-windows\myagent_ui.exe" KeyPath="yes" />
+      </Component>
+      <Component Id="DaemonExecutable" Guid="B2C3D4E5-F6A7-8B9C-0D1E-2F3A4B5C6D7E" Win64="yes">
+        <File Id="MyAgentRuntimeExe" Source="dist-windows\myagent_runtime.exe" KeyPath="yes" />
+      </Component>
+      <Component Id="ConfigFile" Guid="C3D4E5F6-A7B8-9C0D-1E2F-3A4B5C6D7E8F" Win64="yes">
+        <File Id="MyAgentToml" Source="dist-windows\myagent.toml" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>
