@@ -8,5 +8,6 @@ members = [
     "engine/core",
     "runtime",
     "ui/desktop",
+    "installer/setup",
 ]
 resolver = "2"
