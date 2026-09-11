@@ -8,6 +8,7 @@ AppId={{8D9A4B3A-8B6C-4D2A-9E1F-2B3C4D5E6F7C}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppPublisher={#MyAppPublisher}
+AppMutex=AgentOSStudioAppMutex
 DefaultDirName={localappdata}\Programs\AgentOS
 DefaultGroupName={#MyAppName}
 OutputDir=dist-windows
@@ -15,9 +16,12 @@ OutputBaseFilename=AgentOS-Setup-x64
 Compression=lzma2/max
 SolidCompression=yes
 WizardStyle=modern
+WizardResizable=yes
+ArchitecturesAllowed=x64
 ArchitecturesInstallIn64BitMode=x64
 PrivilegesRequired=lowest
 DisableProgramGroupPage=yes
+UninstallDisplayIcon={app}\{#MyAppExeName}
 
 [Languages]
 Name: "chinesesimp"; MessagesFile: "compiler:Languages\ChineseSimplified.isl,compiler:Default.isl"
@@ -32,6 +36,7 @@ Source: "dist-windows\myagent_runtime.exe"; DestDir: "{app}"; Flags: ignoreversi
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"
+Name: "{group}\卸载 {#MyAppName}"; Filename: "{uninstallexe}"
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"; Tasks: desktopicon
 
 [Run]
