@@ -10,7 +10,7 @@
 
 | 下载包类型 | 文件名 | 特性与适用场景 | 官方直接下载直链 |
 | :--- | :--- | :--- | :--- |
-| 🚀 **现代 EXE 安装向导 (推荐)** | `AgentOS-Setup-x64.exe` | 现代 Fluent 向导 (与 VS Code 同规格)，双击即装，原生中文界面，不缺字 | [👉 **点击直接下载 EXE 安装器**](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Setup-x64.exe) |
+| 🚀 **现代 NSIS 安装向导 (首选)** | `AgentOS-Setup-x64.exe` | 现代 NSIS Modern UI 极速向导，双击即装，原生简体中文不缺字，自动桌面快捷方式与一键运行 | [👉 **点击直接下载 EXE 安装器**](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Setup-x64.exe) |
 | 💼 **免安装绿色便携版** | `AgentOS-Studio-Portable-x64.zip` | 无需任何安装过程，解压后双击 `myagent_ui.exe` 直接运行 | [👉 **点击下载免安装便携版**](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Studio-Portable-x64.zip) |
 | 📦 **Windows 标准 MSI 安装包** | `AgentOS-Setup-x64.msi` | Windows 原生 `msiexec.exe` 企业标准安装数据库 | [👉 **点击下载 MSI 安装包**](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Setup-x64.msi) |
 | 🌐 **GitHub Releases 资源主页** | `v0.1.0 (Latest)` | 查看历史发布与全部交付物资产清单 | [🔗 **前往 Releases 主页**](https://github.com/monikalnbo/foragent/releases/tag/v0.1.0) |
@@ -24,10 +24,12 @@
 ```text
 MYagent/
 ├── myagent.toml                     # ★ 全局极简配置文件 (BaseURL, API Key, 模型清单)
-├── .github/workflows/build.yml      # GitHub Actions 跨平台自动打包与 MSI 构建流水线
+├── .github/workflows/build.yml      # GitHub Actions 跨平台自动打包与构建流水线
 ├── Cargo.toml                       # Workspace 根配置 (8 个独立子工程)
 │
 ├── installer/                       # ★ 【Windows 原生安装体系】
+│   ├── nsis/setup.nsi               # NSIS 现代化单文件 EXE 安装器脚本
+│   ├── inno/setup.iss               # Inno Setup 脚本
 │   ├── wix/main.wxs                 # Windows Installer (MSI) WiX 源码定义
 │   └── windows/
 │       ├── install.cmd              # Windows 自带双击一键安装脚本
