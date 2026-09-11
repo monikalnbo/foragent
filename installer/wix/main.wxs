@@ -49,12 +49,13 @@
     <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
       <Component Id="MainExecutable" Guid="A1B2C3D4-E5F6-7A8B-9C0D-1E2F3A4B5C6D" Win64="yes">
         <File Id="MyAgentUIExe" Source="dist-windows\myagent_ui.exe" KeyPath="yes" />
-      </Component>
-      <Component Id="DaemonExecutable" Guid="B2C3D4E5-F6A7-8B9C-0D1E-2F3A4B5C6D7E" Win64="yes">
-        <File Id="MyAgentRuntimeExe" Source="dist-windows\myagent_runtime.exe" KeyPath="yes" />
-      </Component>
-      <Component Id="ConfigFile" Guid="C3D4E5F6-A7B8-9C0D-1E2F-3A4B5C6D7E8F" Win64="yes">
-        <File Id="MyAgentToml" Source="dist-windows\myagent.toml" KeyPath="yes" />
+        <File Id="MyAgentRuntimeExe" Source="dist-windows\myagent_runtime.exe" />
+        <File Id="MyAgentToml" Source="dist-windows\myagent.toml" />
+        <File Id="CoreDll" Source="dist-windows\myagent_core.dll" />
+        <File Id="ProtoDll" Source="dist-windows\myagent_protocol.dll" />
+        <File Id="CapDll" Source="dist-windows\myagent_capability.dll" />
+        <File Id="HealDll" Source="dist-windows\myagent_healing.dll" />
+        <File Id="SandDll" Source="dist-windows\myagent_sandbox.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
