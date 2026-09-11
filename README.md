@@ -6,15 +6,16 @@
 
 ---
 
-## 📦 官方安装包资源直链下载 (Release Package Downloads)
+## 📦 官方安装包与便携版直链下载 (Release Downloads)
 
-| 安装包类型 | 文件名 | 体积 | 下载直链 (点击直接下载) |
+| 下载包类型 | 文件名 | 特性与适用场景 | 官方直接下载直链 |
 | :--- | :--- | :--- | :--- |
-| 🚀 **单文件 EXE 安装器 (推荐)** | `AgentOS-Setup-x64.exe` | **11.49 MB** | [👉 **点击直接下载 AgentOS-Setup-x64.exe**](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Setup-x64.exe) |
-| 📦 **Windows Installer 安装包** | `AgentOS-Setup-x64.msi` | 6.24 MB | [👉 **点击直接下载 AgentOS-Setup-x64.msi**](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Setup-x64.msi) |
-| 🌐 **GitHub Releases 资源主页** | `v0.1.0` | - | [🔗 **前往 GitHub Releases 资源主页**](https://github.com/monikalnbo/foragent/releases/tag/v0.1.0) |
+| 🚀 **现代 EXE 安装向导 (推荐)** | `AgentOS-Setup-x64.exe` | 现代 Fluent 向导 (与 VS Code 同规格)，双击即装，原生中文界面，不缺字 | [👉 **点击直接下载 EXE 安装器**](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Setup-x64.exe) |
+| 💼 **免安装绿色便携版** | `AgentOS-Studio-Portable-x64.zip` | 无需任何安装过程，解压后双击 `myagent_ui.exe` 直接运行 | [👉 **点击下载免安装便携版**](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Studio-Portable-x64.zip) |
+| 📦 **Windows 标准 MSI 安装包** | `AgentOS-Setup-x64.msi` | Windows 原生 `msiexec.exe` 企业标准安装数据库 | [👉 **点击下载 MSI 安装包**](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Setup-x64.msi) |
+| 🌐 **GitHub Releases 资源主页** | `v0.1.0 (Latest)` | 查看历史发布与全部交付物资产清单 | [🔗 **前往 Releases 主页**](https://github.com/monikalnbo/foragent/releases/tag/v0.1.0) |
 
-> 💡 **提示**：推荐下载 **`AgentOS-Setup-x64.exe`**，无需解压任何 zip 压缩包，双击即可弹出安装向导，一键完成安装部署并创建桌面快捷方式。
+> 💡 **提示**：推荐首选 **`AgentOS-Setup-x64.exe`**，点击即可直接下载运行；如不想安装，亦可直接下载 **`AgentOS-Studio-Portable-x64.zip`** 解压秒开！
 
 ---
 

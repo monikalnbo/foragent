@@ -52,16 +52,26 @@ jobs:
           Copy-Item myagent.toml dist-windows/ -Force -ErrorAction SilentlyContinue
           Copy-Item installer/windows/* dist-windows/ -Force -ErrorAction SilentlyContinue
 
-          # 1. 编译 Windows 官方标准 Windows Installer (MSI) 安装包（带原生向导 WixUI）
+          # 1. 制作免安装绿色便携版 zip (解压后直接双击 myagent_ui.exe 即可秒开)
+          Compress-Archive -Path dist-windows/* -DestinationPath dist-windows/AgentOS-Studio-Portable-x64.zip -Force
+          Write-Host ">>> 免安装便携版打包成功: dist-windows/AgentOS-Studio-Portable-x64.zip" -ForegroundColor Green
+
+          # 2. 编译 Windows 现代流行标准 EXE 安装器 (Inno Setup 6, 与 VS Code / Telegram 相同规格)
+          if (-not (Get-Command iscc.exe -ErrorAction SilentlyContinue)) {
+              choco install innosetup -y --no-progress
+          }
+          $isccPath = (Get-Command iscc.exe -ErrorAction SilentlyContinue).Source
+          if (-not $isccPath) {
+              $isccPath = "C:\Program Files (x86)\Inno Setup 6\iscc.exe"
+          }
+          & $isccPath installer/inno/setup.iss
+          Write-Host ">>> 现代 Inno Setup EXE 安装器生成成功: dist-windows/AgentOS-Setup-x64.exe" -ForegroundColor Green
+
+          # 3. 编译 Windows 标准 Windows Installer (MSI)
           if (Get-Command candle.exe -ErrorAction SilentlyContinue) {
               candle.exe -arch x64 -ext WixUIExtension -out target/installer.wixobj installer/wix/main.wxs
               light.exe -ext WixUIExtension -sval -out dist-windows/AgentOS-Setup-x64.msi target/installer.wixobj
-              Write-Host ">>> Windows 官方原生 MSI 安装包生成成功: dist-windows/AgentOS-Setup-x64.msi" -ForegroundColor Green
-
-              # 2. 编译 Windows 官方原生 EXE 安装器 (WiX Burn Bootstrapper)
-              candle.exe -arch x64 -ext WixBalExtension -out target/bundle.wixobj installer/wix/bundle.wxs
-              light.exe -ext WixBalExtension -sval -out dist-windows/AgentOS-Setup-x64.exe target/bundle.wixobj
-              Write-Host ">>> Windows 官方原生 EXE 安装器生成成功: dist-windows/AgentOS-Setup-x64.exe" -ForegroundColor Green
+              Write-Host ">>> Windows 原生 MSI 安装包生成成功: dist-windows/AgentOS-Setup-x64.msi" -ForegroundColor Green
           }
 
       - name: Upload Windows MSI & Release Artifacts
@@ -76,15 +86,17 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v0.1.0
-          name: "AgentOS Studio v0.1.0 (Windows Official Installers)"
+          name: "AgentOS Studio v0.1.0 (Windows Official Release)"
           body: |
             ## 🚀 AgentOS Studio 纯 Rust 原生智能体系统 (v0.1.0)
             
-            ### 📦 官方 Windows 安装包资源（直接下载运行）：
-            - 🚀 **[AgentOS-Setup-x64.exe](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Setup-x64.exe)**（Windows 官方原生 Bootstrapper 安装器）
-            - 📦 **[AgentOS-Setup-x64.msi](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Setup-x64.msi)**（Windows 官方标准安装包，自带完整向导）
+            ### 📦 官方 Windows 安装包资源（推荐首选）：
+            - 🚀 **[AgentOS-Setup-x64.exe](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Setup-x64.exe)**（现代主流 EXE 安装器，与 VS Code 相同规格，双击即装，原生中文界面，不缺字）
+            - 💼 **[AgentOS-Studio-Portable-x64.zip](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Studio-Portable-x64.zip)**（免安装绿色便携版：解压后双击 `myagent_ui.exe` 直接运行）
+            - 📦 **[AgentOS-Setup-x64.msi](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Setup-x64.msi)**（Windows 企业标准 MSI 安装包）
           files: |
             dist-windows/AgentOS-Setup-x64.exe
+            dist-windows/AgentOS-Studio-Portable-x64.zip
             dist-windows/AgentOS-Setup-x64.msi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
