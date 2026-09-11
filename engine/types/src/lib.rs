@@ -9,6 +9,9 @@ pub enum AgentError {
     #[error("JSON 解析错误: {0}")]
     Json(#[from] serde_json::Error),
 
+    #[error("网络请求错误: {0}")]
+    Network(String),
+
     #[error("协议解析错误: {0}")]
     Protocol(String),
 
@@ -26,12 +29,7 @@ pub enum AgentError {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub enum Role {
-    User,
-    Assistant,
-    System,
-    Tool,
-}
+pub enum Role { User, Assistant, System, Tool }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ChatMessage {
@@ -79,4 +77,3 @@ pub struct ApprovalRequest {
     pub modified_code: String,
     pub diff_preview: String,
 }
-

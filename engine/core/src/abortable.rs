@@ -1,4 +1,4 @@
-use crate::runner::CancellationToken;
+use crate::cancellation::CancellationToken;
 use myagent_types::AgentError;
 use std::future::Future;
 

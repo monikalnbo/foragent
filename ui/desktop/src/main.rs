@@ -1,4 +1,10 @@
 mod app;
+mod chat_panel;
+mod diff_panel;
+mod header;
+mod right_panel;
+mod sidebar;
+mod task_panel;
 
 use app::AgentApp;
 use eframe::NativeOptions;

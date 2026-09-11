@@ -1,19 +1,12 @@
-mod chat_panel;
-mod diff_panel;
-mod header;
-mod right_panel;
-mod sidebar;
-mod task_panel;
-
-use chat_panel::ChatPanel;
-use diff_panel::DiffPanel;
+use crate::chat_panel::ChatPanel;
+use crate::diff_panel::DiffPanel;
+use crate::header::HeaderBar;
+use crate::right_panel::{RightTab, RightWorkspace};
+use crate::sidebar::Sidebar;
 use egui::{CentralPanel, Context, SidePanel, TopBottomPanel};
-use header::HeaderBar;
 use myagent_core::config::AgentConfig;
 use myagent_runtime::{RuntimeCommand, RuntimeEvent, RuntimeService};
 use myagent_types::TaskItem;
-use right_panel::{RightTab, RightWorkspace};
-use sidebar::Sidebar;
 use std::path::Path;
 use tokio::sync::mpsc::{channel, Receiver, Sender};
 

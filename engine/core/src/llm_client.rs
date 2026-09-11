@@ -3,17 +3,10 @@ use myagent_types::{AgentError, ChatMessage, Role};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize)]
-struct OpenAiChatRequest {
-    model: String,
-    messages: Vec<OpenAiMessage>,
-    temperature: f32,
-}
+struct OpenAiChatRequest { model: String, messages: Vec<OpenAiMessage>, temperature: f32 }
 
 #[derive(Serialize, Deserialize)]
-struct OpenAiMessage {
-    role: String,
-    content: String,
-}
+struct OpenAiMessage { role: String, content: String }
 
 #[derive(Debug, Clone, Default)]
 pub struct LlmResponse {
@@ -36,10 +29,11 @@ impl LlmClient {
             .find_provider_for_model(&config.default_model)
             .cloned()
             .unwrap_or_else(|| config.providers[0].clone());
+        let api_key = p.resolved_key();
         Self {
             client: reqwest::Client::new(),
             base_url: p.base_url,
-            api_key: p.resolved_key(),
+            api_key,
             model: config.default_model.clone(),
             temperature: 0.6,
         }
@@ -66,14 +60,14 @@ impl LlmClient {
         if !self.api_key.is_empty() {
             req = req.header("Authorization", format!("Bearer {}", self.api_key));
         }
-        let resp = req.send().await.map_err(AgentError::Network)?;
+        let resp = req.send().await.map_err(|e| AgentError::Network(e.to_string()))?;
         if !resp.status().is_success() {
             let status = resp.status();
             let err = resp.text().await.unwrap_or_default();
             return Err(AgentError::Protocol(format!("API 失败 [{status}]: {err}")));
         }
 
-        let json: serde_json::Value = resp.json().await.map_err(AgentError::Network)?;
+        let json: serde_json::Value = resp.json().await.map_err(|e| AgentError::Network(e.to_string()))?;
         let msg = &json["choices"][0]["message"];
         Ok(LlmResponse {
             content: msg["content"].as_str().unwrap_or_default().to_string(),
