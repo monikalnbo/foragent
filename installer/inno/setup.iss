@@ -11,7 +11,7 @@ AppPublisher={#MyAppPublisher}
 AppMutex=AgentOSStudioAppMutex
 DefaultDirName={localappdata}\Programs\AgentOS
 DefaultGroupName={#MyAppName}
-OutputDir=dist-windows
+OutputDir=..\..\dist-windows
 OutputBaseFilename=AgentOS-Setup-Inno-x64
 Compression=lzma2/max
 SolidCompression=yes
@@ -30,9 +30,9 @@ Name: "default"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "创建桌面快捷方式"; GroupDescription: "附加快捷方式:"
 
 [Files]
-Source: "dist-windows\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: "*.exe,*.msi,*.zip"
-Source: "dist-windows\myagent_ui.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "dist-windows\myagent_runtime.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\..\dist-windows\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: "*.exe,*.msi,*.zip"
+Source: "..\..\dist-windows\myagent_ui.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\..\dist-windows\myagent_runtime.exe"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"
