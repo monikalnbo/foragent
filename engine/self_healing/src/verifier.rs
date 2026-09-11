@@ -7,8 +7,9 @@ pub struct AstVerifier {
 impl AstVerifier {
     pub fn new_rust() -> Result<Self, String> {
         let mut parser = Parser::new();
+        let lang: tree_sitter::Language = tree_sitter_rust::language().into();
         parser
-            .set_language(&tree_sitter_rust::LANGUAGE.into())
+            .set_language(&lang)
             .map_err(|e| e.to_string())?;
         Ok(Self { parser })
     }
