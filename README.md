@@ -6,34 +6,40 @@
 
 ---
 
-## 一、 核心子工程全景树（全部为 40~75 行小文件）
+## 一、 核心子工程全景树（全部为 40~85 行微文件）
 
 ```text
 MYagent/
 ├── myagent.toml                     # ★ 全局极简配置文件 (BaseURL, API Key, 模型清单)
-├── .github/workflows/build.yml      # GitHub Actions 跨平台全自动编译打包流水线
+├── .github/workflows/build.yml      # GitHub Actions 跨平台自动打包与 MSI 构建流水线
 ├── Cargo.toml                       # Workspace 根配置 (8 个独立子工程)
 │
+├── installer/                       # ★ 【Windows 原生安装体系】
+│   ├── wix/main.wxs                 # Windows Installer (MSI) WiX 源码定义
+│   └── windows/
+│       ├── install.cmd              # Windows 自带双击一键安装脚本
+│       ├── install.ps1              # 桌面/开始菜单/PATH/已安装应用注册脚本
+│       └── uninstall.ps1            # Windows 原生无残留卸载脚本
+│
 ├── runtime/                         # ★ 【独立运行时服务】(myagent_runtime.exe / myagent_runtime.dll)
-│   ├── Cargo.toml
-│   └── src/
-│       ├── protocol.rs              # [RuntimeCommand 与 RuntimeEvent 异步解耦通信协议]
-│       ├── service.rs               # [后台无头 Agent 核心事件循环]
-│       └── main.rs                  # [无头守护进程启动入口]
+│   ├── src/protocol.rs              # [RuntimeCommand 与 RuntimeEvent 异步解耦通信协议]
+│   ├── src/react_loop.rs            # [15 轮自主 ReAct 闭环循环执行器]
+│   └── src/service.rs               # [后台无头 Agent 核心事件调度器]
 │
 ├── engine/                          # ★ 【内部核心引擎体系】(编译为独立 DLL)
 │   ├── types/                       # [myagent_types] 核心实体与统一错误 (rlib)
-│   ├── protocol/                    # [myagent_protocol.dll] R1 思考流 / ToolCall / 级联降级
+│   ├── protocol/                    # [myagent_protocol.dll] R1 思考流 / XML Action / Native Tools
 │   ├── capability/                  # [myagent_capability.dll]
 │   │   ├── src/response_cache.rs    # ★ [BLAKE3 高效推理响应缓存]
 │   │   ├── src/memory.rs            # ★ [跨会话长期持久记忆 PersistentMemory]
-│   │   ├── src/fs_patch.rs          # [CRLF 模糊 Patch]
+│   │   ├── src/fs_patch.rs          # [CRLF 模糊 Patch 与安全新建]
 │   │   └── src/task_mgr.rs          # [任务清单状态机]
-│   ├── self_healing/                # [myagent_healing.dll] (Tree-sitter AST 自检 + 语义看门狗)
-│   ├── sandbox/                     # [myagent_sandbox.dll] (影子工作区与进程防爆杀)
+│   ├── self_healing/                # [myagent_healing.dll] (Tree-sitter AST 自检 + 语义防偷删)
+│   ├── sandbox/                     # [myagent_sandbox.dll] (影子工作区与命令超时防爆杀)
 │   └── core/                        # [myagent_core.dll]
-│       ├── src/config.rs            # ★ [myagent.toml 简易配置加载器]
-│       └── src/ffi.rs               # [C-ABI 操纵句柄导出]
+│       ├── src/prompt.rs            # [SystemPrompt 动态注入]
+│       ├── src/tool_dispatcher.rs   # [7 大工程工具异步分发器]
+│       └── src/config.rs            # ★ [myagent.toml 简易配置加载器]
 │
 └── ui/                              # ★ 【外部独立纯界面客户端】(100% 纯 Rust 原生 GUI)
     └── desktop/                     # [myagent_ui.exe] (只负责渲染，通过 Channel 与 Runtime 通信)
@@ -66,18 +72,16 @@ models = ["qwen2.5-coder:7b", "deepseek-r1:14b"]
 
 ---
 
-## 三、 高效缓存与持久记忆机制
+## 三、 Windows 原生安装方式 (Windows 自带 Install)
 
-1. **BLAKE3 推理与响应缓存 (`ResponseCache`)**：
-   * 对 `(model + prompt)` 生成唯一 BLAKE3 哈希指纹；
-   * 相同指令或探索任务命中缓存，**微秒级直出，0 Token 消耗**，大幅节约成本与等待时间。
-2. **跨会话长期持久记忆 (`PersistentMemory`)**：
-   * 自动在本地存储长期用户偏好、项目架构规约与历史采纳的修复方案；
-   * 开新会话时自动提取相关记忆注入 Prompt，**越用越懂你的工程习惯**。
+本工程支持 **Windows 官方原生安装**，完全无需安装任何第三方环境：
 
----
+1. **Windows Installer 官方安装包 (`.msi`)**：
+   - GitHub Actions 自动生成 `AgentOS-Setup-x64.msi`；
+   - 双击直接调用 Windows 系统自带的 **Windows Installer (`msiexec.exe`)** 安装向导；
+   - 自动写入 Windows“设置/控制面板 -> 已安装的应用”并注册系统级卸载。
 
-## 四、 Runtime 与 UI 彻底分离的极致体验
-
-* **Runtime 纯无头（Headless）**：不仅可以作为后台守护进程独立跑在服务器或终端中，也可以被其它 CLI / IDE 插件调用；
-* **UI 纯展示（Pure Presentation）**：UI 只发送指令（`RuntimeCommand`）并订阅事件（`RuntimeEvent`），UI 关掉甚至崩溃，后台任务依然在沙箱中安全运行！
+2. **Windows 自带一键脚本安装 (`install.cmd` / `install.ps1`)**：
+   - 解压包内自带 `install.cmd`，直接双击运行；
+   - 调用 Windows 自带 PowerShell 与 WScript COM 组件部署至 `%LOCALAPPDATA%\Programs\AgentOS`；
+   - 自动生成桌面快捷方式、开始菜单目录、用户 PATH 变量，并注册一键卸载支持。
