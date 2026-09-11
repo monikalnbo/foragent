@@ -1,0 +1,21 @@
+[package]
+name = "myagent_core"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "myagent_core"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+myagent_types = { path = "../types" }
+myagent_protocol = { path = "../protocol" }
+myagent_capability = { path = "../capability" }
+myagent_healing = { path = "../self_healing" }
+myagent_sandbox = { path = "../sandbox" }
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+toml = "0.8"
+async-trait = "0.1"
+reqwest = { version = "0.12", features = ["json"] }

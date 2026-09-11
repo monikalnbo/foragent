@@ -1,0 +1,71 @@
+name: Build & Package Dynamic Libraries and UI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2
+
+      - name: Run Workspace Syntax Check
+        run: cargo check --workspace
+
+      - name: Run Tests
+        run: cargo test --workspace
+
+      - name: Build Release Binaries & Dynamic Libraries
+        run: cargo build --release --workspace
+
+      - name: Prepare Windows Artifacts
+        if: matrix.os == 'windows-latest'
+        shell: bash
+        run: |
+          mkdir -p dist-windows
+          cp target/release/*.dll dist-windows/ 2>/dev/null || true
+          cp target/release/myagent_ui.exe dist-windows/ 2>/dev/null || true
+          cp target/release/myagent_runtime.exe dist-windows/ 2>/dev/null || true
+          cp myagent.toml dist-windows/ 2>/dev/null || true
+          echo "Windows build artifacts packaged successfully."
+
+      - name: Upload Windows Dynamic Libraries & UI Artifact
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: myagent-windows-x64
+          path: dist-windows/
+
+      - name: Prepare Linux Artifacts
+        if: matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          mkdir -p dist-linux
+          cp target/release/*.so dist-linux/ 2>/dev/null || true
+          cp target/release/myagent_ui dist-linux/ 2>/dev/null || true
+          cp target/release/myagent_runtime dist-linux/ 2>/dev/null || true
+          cp myagent.toml dist-linux/ 2>/dev/null || true
+          echo "Linux build artifacts packaged successfully."
+
+      - name: Upload Linux Dynamic Libraries & UI Artifact
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: myagent-linux-x64
+          path: dist-linux/

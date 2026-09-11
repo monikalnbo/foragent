@@ -1,0 +1,12 @@
+[workspace]
+members = [
+    "engine/types",
+    "engine/protocol",
+    "engine/capability",
+    "engine/self_healing",
+    "engine/sandbox",
+    "engine/core",
+    "runtime",
+    "ui/desktop",
+]
+resolver = "2"

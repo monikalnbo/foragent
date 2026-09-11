@@ -1,0 +1,16 @@
+[package]
+name = "myagent_ui"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "myagent_ui"
+path = "src/main.rs"
+
+[dependencies]
+myagent_runtime = { path = "../../runtime" }
+myagent_core = { path = "../../engine/core" }
+myagent_types = { path = "../../engine/types" }
+eframe = "0.28"
+egui = "0.28"
+tokio = { version = "1", features = ["full"] }

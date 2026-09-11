@@ -1,0 +1,24 @@
+# AgentOS 全局简易配置文件 (myagent.toml)
+
+default_model = "deepseek-reasoner"
+timeout_seconds = 60
+
+# 1. 云端最强推理模型提供商 (DeepSeek)
+[[providers]]
+name = "deepseek"
+base_url = "https://api.deepseek.com/v1"
+api_key = "ENV:DEEPSEEK_API_KEY"  # 自动读取系统环境变量 DEEPSEEK_API_KEY，亦可直接写 sk-xxx
+models = [
+    "deepseek-reasoner",           # DeepSeek-R1 深度思考模型
+    "deepseek-chat"                # DeepSeek-V3 快速代码生成模型
+]
+
+# 2. 本地离线兜底提供商 (Ollama)
+[[providers]]
+name = "ollama"
+base_url = "http://localhost:11434/v1"
+api_key = "ollama"
+models = [
+    "qwen2.5-coder:7b",
+    "deepseek-r1:14b"
+]

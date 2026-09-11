@@ -1,0 +1,12 @@
+[package]
+name = "myagent_sandbox"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "myagent_sandbox"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+myagent_types = { path = "../types" }
+tokio = { version = "1", features = ["full"] }
