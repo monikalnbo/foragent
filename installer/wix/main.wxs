@@ -5,6 +5,11 @@
     <MajorUpgrade DowngradeErrorMessage="A newer version of AgentOS Studio is already installed." />
     <MediaTemplate EmbedCab="yes" />
 
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+    <WixVariable Id="WixUILicenseRtf" Value="installer\wix\License.rtf" />
+    <UIRef Id="WixUI_InstallDir" />
+    <UIRef Id="WixUI_ErrorProgressText" />
+
     <Feature Id="ProductFeature" Title="AgentOS Studio" Level="1">
       <ComponentGroupRef Id="ProductComponents" />
       <ComponentRef Id="ApplicationShortcut" />

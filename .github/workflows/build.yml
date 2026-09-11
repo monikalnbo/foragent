@@ -41,7 +41,7 @@ jobs:
       - name: Build Release Binaries & Dynamic Libraries
         run: cargo build --release --workspace
 
-      - name: Prepare Windows Artifacts & Build EXE/MSI Installers
+      - name: Prepare Windows Artifacts & Build Official Windows Installers
         if: matrix.os == 'windows-latest'
         shell: pwsh
         run: |
@@ -52,17 +52,16 @@ jobs:
           Copy-Item myagent.toml dist-windows/ -Force -ErrorAction SilentlyContinue
           Copy-Item installer/windows/* dist-windows/ -Force -ErrorAction SilentlyContinue
 
-          # 1. 压缩当前全部已编译二进制与依赖，注入到纯 Rust 单文件安装器
-          Compress-Archive -Path dist-windows/* -DestinationPath installer/setup/payload.zip -Force
-          cargo build --release -p myagent_setup
-          Copy-Item target/release/AgentOS-Setup-x64.exe dist-windows/ -Force
-          Write-Host ">>> 纯 Rust 单文件 EXE 安装器已生成: dist-windows/AgentOS-Setup-x64.exe" -ForegroundColor Green
-
-          # 2. 编译 Windows 自带的原生 Windows Installer (MSI) 安装包
+          # 1. 编译 Windows 官方标准 Windows Installer (MSI) 安装包（带原生向导 WixUI）
           if (Get-Command candle.exe -ErrorAction SilentlyContinue) {
-              candle.exe -arch x64 -out target/installer.wixobj installer/wix/main.wxs
-              light.exe -sval -out dist-windows/AgentOS-Setup-x64.msi target/installer.wixobj
-              Write-Host ">>> Windows 原生 MSI 安装包生成成功: dist-windows/AgentOS-Setup-x64.msi" -ForegroundColor Green
+              candle.exe -arch x64 -ext WixUIExtension -out target/installer.wixobj installer/wix/main.wxs
+              light.exe -ext WixUIExtension -sval -out dist-windows/AgentOS-Setup-x64.msi target/installer.wixobj
+              Write-Host ">>> Windows 官方原生 MSI 安装包生成成功: dist-windows/AgentOS-Setup-x64.msi" -ForegroundColor Green
+
+              # 2. 编译 Windows 官方原生 EXE 安装器 (WiX Burn Bootstrapper)
+              candle.exe -arch x64 -ext WixBalExtension -out target/bundle.wixobj installer/wix/bundle.wxs
+              light.exe -ext WixBalExtension -sval -out dist-windows/AgentOS-Setup-x64.exe target/bundle.wixobj
+              Write-Host ">>> Windows 官方原生 EXE 安装器生成成功: dist-windows/AgentOS-Setup-x64.exe" -ForegroundColor Green
           }
 
       - name: Upload Windows MSI & Release Artifacts
@@ -72,18 +71,18 @@ jobs:
           name: myagent-windows-x64
           path: dist-windows/
 
-      - name: Publish Single-File EXE Installer to GitHub Releases
+      - name: Publish Official Windows Installers to GitHub Releases
         if: matrix.os == 'windows-latest' && github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v0.1.0
-          name: "AgentOS Studio v0.1.0 (Single-File EXE Installer)"
+          name: "AgentOS Studio v0.1.0 (Windows Official Installers)"
           body: |
-            ## 🚀 AgentOS Studio 纯 Rust 原生智能体系统
+            ## 🚀 AgentOS Studio 纯 Rust 原生智能体系统 (v0.1.0)
             
-            ### 📥 快速下载安装（无需解压）：
-            - 点击下方 Assets 中的 **`AgentOS-Setup-x64.exe`** 直接下载单个安装程序！
-            - 下载后直接双击该 `.exe` 即可完成安装并自动创建桌面快捷方式。
+            ### 📦 官方 Windows 安装包资源（直接下载运行）：
+            - 🚀 **[AgentOS-Setup-x64.exe](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Setup-x64.exe)**（Windows 官方原生 Bootstrapper 安装器）
+            - 📦 **[AgentOS-Setup-x64.msi](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Setup-x64.msi)**（Windows 官方标准安装包，自带完整向导）
           files: |
             dist-windows/AgentOS-Setup-x64.exe
             dist-windows/AgentOS-Setup-x64.msi
