@@ -10,12 +10,14 @@
 
 | 下载包类型 | 文件名 | 特性与适用场景 | 官方直接下载直链 |
 | :--- | :--- | :--- | :--- |
-| 🚀 **现代 NSIS 安装向导 (首选)** | `AgentOS-Setup-x64.exe` | 现代 NSIS Modern UI 极速向导，双击即装，原生简体中文不缺字，自动桌面快捷方式与一键运行 | [👉 **点击直接下载 EXE 安装器**](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Setup-x64.exe) |
-| 💼 **免安装绿色便携版** | `AgentOS-Studio-Portable-x64.zip` | 无需任何安装过程，解压后双击 `myagent_ui.exe` 直接运行 | [👉 **点击下载免安装便携版**](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Studio-Portable-x64.zip) |
-| 📦 **Windows 标准 MSI 安装包** | `AgentOS-Setup-x64.msi` | Windows 原生 `msiexec.exe` 企业标准安装数据库 | [👉 **点击下载 MSI 安装包**](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Setup-x64.msi) |
-| 🌐 **GitHub Releases 资源主页** | `v0.1.0 (Latest)` | 查看历史发布与全部交付物资产清单 | [🔗 **前往 Releases 主页**](https://github.com/monikalnbo/foragent/releases/tag/v0.1.0) |
+| 🚀 **现代 NSIS 安装向导 (首选)** | `AgentOS-Setup-x64.exe` | NSIS Modern UI 2 极速向导，双击即装，原生简体中文不缺字，自动桌面快捷方式与一键秒开 | [👉 **点击下载 NSIS 默认版**](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Setup-x64.exe) |
+| ⚡ **NSIS 独立专享安装包** | `AgentOS-Setup-NSIS-x64.exe` | NSIS 独立单文件规格包，支持用户级免提权安装与极速静默卸载 | [👉 **点击下载 NSIS 专享包**](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Setup-NSIS-x64.exe) |
+| 🛠️ **Inno Setup 经典安装包** | `AgentOS-Setup-Inno-x64.exe` | Inno Setup 6 现代化 Fluent 向导，支持多进程互斥锁检测，桌面与开始菜单图标 | [👉 **点击下载 Inno 安装包**](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Setup-Inno-x64.exe) |
+| 💼 **免安装绿色便携版** | `AgentOS-Studio-Portable-x64.zip` | 无需任何安装过程，解压后双击 `myagent_ui.exe` 直接运行，自带离线脚本 | [👉 **点击下载绿色便携版**](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Studio-Portable-x64.zip) |
+| 📦 **Windows 企业标准 MSI** | `AgentOS-Setup-x64.msi` | 微软原生 `msiexec.exe` 企业标准安装数据库，支持域控组策略 GPO 静默推送 | [👉 **点击下载 MSI 安装包**](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Setup-x64.msi) |
+| 🌐 **GitHub Releases 资产主页** | `v0.1.0 (Latest)` | 查看历史发布与全部 5 大交付物资产清单 | [🔗 **前往 Releases 主页**](https://github.com/monikalnbo/foragent/releases/tag/v0.1.0) |
 
-> 💡 **提示**：推荐首选 **`AgentOS-Setup-x64.exe`**，点击即可直接下载运行；如不想安装，亦可直接下载 **`AgentOS-Studio-Portable-x64.zip`** 解压秒开！
+> 💡 **提示**：所有 5 种安装/分发方式均 100% 完整打包所有 5 个核心 DLL，路径与快捷方式全兼容。推荐首选 **`AgentOS-Setup-x64.exe` (NSIS)**，点击即可直接下载运行！
 
 ---
 

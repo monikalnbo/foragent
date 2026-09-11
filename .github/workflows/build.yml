@@ -68,16 +68,49 @@ jobs:
               $nsisPath = "C:\Program Files\NSIS\makensis.exe"
           }
           & $nsisPath installer/nsis/setup.nsi
+          if ($LASTEXITCODE -ne 0) { throw "NSIS compilation failed with code $LASTEXITCODE" }
+          Copy-Item dist-windows/AgentOS-Setup-x64.exe dist-windows/AgentOS-Setup-NSIS-x64.exe -Force
           Write-Host ">>> 现代 NSIS EXE 安装器生成成功: dist-windows/AgentOS-Setup-x64.exe" -ForegroundColor Green
 
-          # 3. 编译 Windows 标准 Windows Installer (MSI)
+          # 3. 编译 Windows 现代 Inno Setup 6 Fluent 安装器
+          if (-not (Get-Command iscc.exe -ErrorAction SilentlyContinue)) {
+              choco install innosetup -y --no-progress
+          }
+          $isccPath = (Get-Command iscc.exe -ErrorAction SilentlyContinue).Source
+          if (-not $isccPath) {
+              $isccPath = "C:\Program Files (x86)\Inno Setup 6\iscc.exe"
+          }
+          if (Test-Path $isccPath) {
+              & $isccPath installer/inno/setup.iss
+              if ($LASTEXITCODE -ne 0) { throw "Inno Setup compilation failed with code $LASTEXITCODE" }
+              Write-Host ">>> Inno Setup EXE 安装器生成成功: dist-windows/AgentOS-Setup-Inno-x64.exe" -ForegroundColor Green
+          }
+
+          # 4. 编译 Windows 企业标准 Windows Installer (MSI)
           if (Get-Command candle.exe -ErrorAction SilentlyContinue) {
               candle.exe -arch x64 -ext WixUIExtension -out target/installer.wixobj installer/wix/main.wxs
               light.exe -ext WixUIExtension -sval -out dist-windows/AgentOS-Setup-x64.msi target/installer.wixobj
+              if ($LASTEXITCODE -ne 0) { throw "WiX MSI compilation failed with code $LASTEXITCODE" }
               Write-Host ">>> Windows 原生 MSI 安装包生成成功: dist-windows/AgentOS-Setup-x64.msi" -ForegroundColor Green
           }
 
-      - name: Upload Windows MSI & Release Artifacts
+          # 5. 严格验证所有多安装器交付物实体存在与体积
+          $requiredArtifacts = @(
+              "dist-windows/AgentOS-Setup-x64.exe",
+              "dist-windows/AgentOS-Setup-NSIS-x64.exe",
+              "dist-windows/AgentOS-Setup-Inno-x64.exe",
+              "dist-windows/AgentOS-Setup-x64.msi",
+              "dist-windows/AgentOS-Studio-Portable-x64.zip"
+          )
+          foreach ($art in $requiredArtifacts) {
+              if (-not (Test-Path $art)) {
+                  throw "Critical error: Expected artifact $art was not found!"
+              }
+              $len = (Get-Item $art).Length
+              Write-Host ">>> [Verified Artifact] $art ($([math]::Round($len/1MB, 2)) MB)" -ForegroundColor Cyan
+          }
+
+      - name: Upload Windows Multi-Installer Release Artifacts
         if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v4
         with:
@@ -93,14 +126,19 @@ jobs:
           body: |
             ## 🚀 AgentOS Studio 纯 Rust 原生智能体系统 (v0.1.0)
             
-            ### 📦 官方 Windows 安装包资源（推荐首选）：
-            - 🚀 **[AgentOS-Setup-x64.exe](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Setup-x64.exe)**（NSIS 现代单文件 EXE 安装器：原生 Modern UI、简体中文极速向导、自动创建桌面快捷方式、一键启动）
-            - 💼 **[AgentOS-Studio-Portable-x64.zip](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Studio-Portable-x64.zip)**（免安装绿色便携版：解压后双击 `myagent_ui.exe` 直接运行）
-            - 📦 **[AgentOS-Setup-x64.msi](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Setup-x64.msi)**（Windows 企业标准 MSI 安装包）
+            ### 📦 官方 Windows 多格式完整安装体系（按需自选，全部兼容）：
+            - 🚀 **[AgentOS-Setup-x64.exe](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Setup-x64.exe)**（NSIS 官方推荐默认版：Modern UI 2 向导、原生中文不缺字、桌面快捷方式、一键秒开）
+            - ⚡ **[AgentOS-Setup-NSIS-x64.exe](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Setup-NSIS-x64.exe)**（NSIS 独立专享安装包）
+            - 🛠️ **[AgentOS-Setup-Inno-x64.exe](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Setup-Inno-x64.exe)**（Inno Setup 6 经典安装包：Fluent 向导、互斥防重、桌面与菜单快捷方式）
+            - 💼 **[AgentOS-Studio-Portable-x64.zip](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Studio-Portable-x64.zip)**（免安装绿色便携版：解压后直接双击 `myagent_ui.exe` 秒开，内附一键脚本）
+            - 📦 **[AgentOS-Setup-x64.msi](https://github.com/monikalnbo/foragent/releases/download/v0.1.0/AgentOS-Setup-x64.msi)**（Windows 企业标准 MSI 数据库安装包）
           files: |
             dist-windows/AgentOS-Setup-x64.exe
-            dist-windows/AgentOS-Studio-Portable-x64.zip
+            dist-windows/AgentOS-Setup-NSIS-x64.exe
+            dist-windows/AgentOS-Setup-Inno-x64.exe
             dist-windows/AgentOS-Setup-x64.msi
+            dist-windows/AgentOS-Studio-Portable-x64.zip
+          fail_on_unmatched_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

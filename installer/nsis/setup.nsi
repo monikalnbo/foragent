@@ -1,3 +1,4 @@
+!cd ..\..
 !include "MUI2.nsh"
 
 !define PRODUCT_NAME "AgentOS Studio"
@@ -5,10 +6,13 @@
 !define PRODUCT_PUBLISHER "AgentOS Team"
 !define PRODUCT_EXE "myagent_ui.exe"
 !define UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\AgentOS"
+!ifndef DIST_DIR
+!define DIST_DIR "dist-windows"
+!endif
 
 Unicode true
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "dist-windows\AgentOS-Setup-x64.exe"
+OutFile "${DIST_DIR}\AgentOS-Setup-x64.exe"
 InstallDir "$LOCALAPPDATA\Programs\AgentOS"
 RequestExecutionLevel user
 SetCompressor /SOLID lzma
@@ -30,9 +34,9 @@ Section "MainSection" SEC01
     SetOutPath "$INSTDIR"
     SetOverwrite on
 
-    File /r /x "*.exe" /x "*.msi" /x "*.zip" "dist-windows\*.*"
-    File "dist-windows\myagent_ui.exe"
-    File "dist-windows\myagent_runtime.exe"
+    File /r /x "*.exe" /x "*.msi" /x "*.zip" "${DIST_DIR}\*.*"
+    File "${DIST_DIR}\myagent_ui.exe"
+    File "${DIST_DIR}\myagent_runtime.exe"
 
     WriteUninstaller "$INSTDIR\Uninstall.exe"
 
